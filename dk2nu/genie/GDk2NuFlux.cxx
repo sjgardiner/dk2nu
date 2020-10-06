@@ -358,7 +358,7 @@ bool GDk2NuFlux::GenerateNext_weighted(void)
   bsim::calcEnuWgt(fCurDk2Nu->decay,fCurNuChoice->x4NuBeam.Vect(),Ev,wgt_xy);
 
   if (Ev > fMaxEv) {
-     LOG("Flux", pWARN)
+     LOG("Flux", pDEBUG)
           << "Flux neutrino energy exceeds declared maximum neutrino energy"
           << "\nEv = " << Ev << "(> Ev{max} = " << fMaxEv << ")";
   }
@@ -422,10 +422,11 @@ bool GDk2NuFlux::GenerateNext_weighted(void)
     << "\n x4 user: " << utils::print::X4AsString(&(fCurNuChoice->x4NuUser));
 #endif
   if ( Ev > fMaxEv ) {
-    LOG("Flux", pFATAL)
+    LOG("Flux", pDEBUG)
       << "Generated neutrino had E_nu = " << Ev << " > " << fMaxEv
       << " maximum ";
-    assert(0);
+    return false;
+    //assert(0);
   }
 
   // update sum of weights
@@ -803,7 +804,8 @@ void GDk2NuFlux::ScanForMaxWeight(void)
   TStopwatch t;
   t.Start();
   for (int itry=0; itry < fMaxWgtEntries; ++itry) {
-    this->GenerateNext_weighted();
+    bool ok = this->GenerateNext_weighted();
+    if ( !ok ) continue;
     double wgt = this->Weight();
     if ( wgt > wgtgenmx ) wgtgenmx = wgt;
     double enu = fCurNuChoice->p4NuBeam.Energy();
