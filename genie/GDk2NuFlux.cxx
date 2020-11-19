@@ -15,6 +15,8 @@
 
 //#define __GENIE_LOW_LEVEL_MESG_ENABLED__
 
+#define MY_ENERGY_CUT 0.060 // GeV
+
 #include <cstdlib>
 #include <fstream>
 #include <vector>
@@ -356,6 +358,9 @@ bool GDk2NuFlux::GenerateNext_weighted(void)
   fCurNuChoice->x4NuBeam += ( rnd->RndFlux().Rndm()*fFluxWindowDir1 +
                               rnd->RndFlux().Rndm()*fFluxWindowDir2   );
   bsim::calcEnuWgt(fCurDk2Nu->decay,fCurNuChoice->x4NuBeam.Vect(),Ev,wgt_xy);
+
+  // Apply an energy cut on the generated neutrino
+  if ( Ev > MY_ENERGY_CUT ) return false;
 
   if (Ev > fMaxEv) {
      LOG("Flux", pWARN)
@@ -803,7 +808,8 @@ void GDk2NuFlux::ScanForMaxWeight(void)
   TStopwatch t;
   t.Start();
   for (int itry=0; itry < fMaxWgtEntries; ++itry) {
-    this->GenerateNext_weighted();
+    bool is_ok = this->GenerateNext_weighted();
+    if ( !is_ok ) continue;
     double wgt = this->Weight();
     if ( wgt > wgtgenmx ) wgtgenmx = wgt;
     double enu = fCurNuChoice->p4NuBeam.Energy();
