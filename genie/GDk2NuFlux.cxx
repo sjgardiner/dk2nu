@@ -15,8 +15,6 @@
 
 //#define __GENIE_LOW_LEVEL_MESG_ENABLED__
 
-#define MY_ENERGY_CUT 0.060 // GeV
-
 #include <cstdlib>
 #include <fstream>
 #include <vector>

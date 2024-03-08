@@ -20,6 +20,8 @@
 #ifndef _GDK2NUFLUX_H_
 #define _GDK2NUFLUX_H_
 
+#define MY_ENERGY_CUT 0.060 // GeV
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -80,7 +82,7 @@ public :
   // the NuMI neutrino flux simulations with the GENIE event generation drivers
 
   const PDGCodeList &    FluxParticles (void) { return *fPdgCList;            }
-  double                 MaxEnergy     (void) { return  fMaxEv;               }
+  double                 MaxEnergy     (void) { return  MY_ENERGY_CUT; }
   bool                   GenerateNext  (void);
   int                    PdgCode       (void);
   double                 Weight        (void) { return  fWeight;              }
